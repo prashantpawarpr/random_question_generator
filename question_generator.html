@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Random Question Generator</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      #output {
+        border: 1px solid #ccc;
+        padding: 15px;
+        min-height: 100px;
+        background-color: #f9f9f9;
+      }
+      button {
+        padding: 10px 15px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Random Quiz Question Generator</h1>
+    <button onclick="generateQuestions()">Generate New Quiz</button>
+    <p>Generated <span id="questionCount">0</span> questions:</p>
+    <div id="output">No questions generated yet.</div>
+
+    <script>
+      // Your list of 100 questions (replace with your actual questions)
+      const allQuestions = [
+        "Question 1: What are the four primary components of a computer?",
+        "Question 2: What is the function of the CPU?",
+        "Question 3: How does RAM differ from ROM?",
+        "Question 4: What is a motherboard and what does it do?",
+        "Question 5: What is the difference between an SSD and HDD?",
+        "Question 6: Which component is considered the brain of the computer?",
+        "Question 7: What are ports? Name any two common ports on a PC?",
+        "Question 8: A PC is beeping continuously at startup. What could this indicate?",
+        "Question 9: Name two PPEs (Personal Protective Equipment) used in hardware labs?",
+        "Question 10: What is ESD and why is it dangerous?",
+        "Question 11: Why should you avoid working on a live circuit?",
+        "Question 12: What is the use of a multimeter in PC repair?",
+        "Question 13: You installed a new component and now the PC won’t boot. What would you check first?",
+        "Question 14: What steps are involved in assembling a PC?",
+        "Question 15: What is thermal paste used for?",
+        "Question 16: What should you check after assembling a PC before turning it on?",
+        "Question 17: After PC assembly, the power turns on but there is no display. Suggest a fix?",
+        "Question 18: What is preventive maintenance?",
+        "Question 19: List three maintenance tasks for PCs?",
+        "Question 20: What is the first step of the troubleshooting process?",
+        "Question 21: What does POST stand for and what does it do?",
+        "Question 22: How would you fix a system that randomly shuts down during use?",
+        "Question 23: List steps to install Windows 10?",
+        "Question 24: What is disk partitioning during installation?",
+        "Question 25: Difference between MBR and GPT?",
+        "Question 26: Windows installation fails at 50%. What would you check?",
+        "Question 27: What is the function of Control Panel?",
+        "Question 28: What does Task Manager help with?",
+        "Question 29: How do you create a restore point?",
+        "Question 30: What is virtualization?",
+        "Question 31: The system is running slow after update. What would you do?",
+        "Question 32: Define LAN, MAN, and WAN?",
+        "Question 33: What is a MAC address?",
+        "Question 34: Difference between switch and router?",
+        "Question 35: What is IP addressing?",
+        "Question 36: What is a subnet mask?",
+        "Question 37: A device is not connecting to the network. What three things will you check?",
+        "Question 38: What command is used to check IP configuration?",
+        "Question 39: Name two wireless security protocols?",
+        "Question 40: What is DHCP?",
+        "Question 41: How do you share a folder on the network?",
+        "Question 42: A user is unable to access the shared folder. What should you check?",
+        "Question 43: What is the main difference between a laptop and a desktop?",
+        "Question 44: Name two replaceable components in laptops?",
+        "Question 45: What is airplane mode?",
+        "Question 46: What is a docking station?",
+        "Question 47: Laptop keyboard is not working. What do you check first?",
+        "Question 48: Name two mobile OSes?",
+        "Question 49: What is the use of the App Store or Play Store?",
+        "Question 50: What is Linux used for?",
+        "Question 51: What are the advantages of macOS?",
+        "Question 52: Mobile apps are crashing frequently. What steps should you take?",
+        "Question 53: Name three types of printers?",
+        "Question 54: What is duplex printing?",
+        "Question 55: What is spooling in printing?",
+        "Question 56: What does a print server do?",
+        "Question 57: Printer is printing blank pages. Suggest causes?",
+        "Question 58: Define firewall?",
+        "Question 59: What is antivirus software?",
+        "Question 60: What is phishing?",
+        "Question 61: Define multi-factor authentication?",
+        "Question 62: You suspect a virus. What steps would you take?",
+        "Question 63: Why are soft skills important in IT?",
+        "Question 64: What is professional etiquette in IT support?",
+        "Question 65: How should you answer a client call?",
+        "Question 66: Define confidentiality in IT?",
+        "Question 67: A user is angry and yelling. How should you respond?",
+        "Question 68: What are symptoms of a failing hard drive?",
+        "Question 69: What are signs of faulty RAM?",
+        "Question 70: How would you test if the PSU is working?",
+        "Question 71: What tool is used to test network cable continuity?",
+        "Question 72: After Windows update, system is not booting. What are your options?",
+        "Question 73: What is the OSI model?",
+        "Question 74: Name the 7 layers of the OSI model?",
+        "Question 75: What is the function of the transport layer?",
+        "Question 76: What is Telnet used for?",
+        "Question 77: What is SSH and why is it more secure than Telnet?",
+        "Question 78: What is a packet sniffer?",
+        "Question 79: What is the function of DNS?",
+        "Question 80: Define TFTP?",
+        "Question 81: Your ping command is failing. What might be wrong?",
+        "Question 82: What is Active Directory?",
+        "Question 83: What is a domain controller?",
+        "Question 84: How do you create a user in AD?",
+        "Question 85: What are NTFS permissions?",
+        "Question 86: What is the difference between inherited and explicit permissions?",
+        "Question 87: What is Group Policy used for?",
+        "Question 88: What is Event Viewer and what can it be used for?",
+        "Question 89: What is Disk Management in Windows?",
+        "Question 90: How do you create and format a new volume in Windows?",
+        "Question 91: How do you check the IP address using Command Prompt?",
+        "Question 92: What is the function of the `ping` command?",
+        "Question 93: What does the `tracert` command do?",
+        "Question 94: How do you open Task Manager quickly?",
+        "Question 95: What command is used to see open network connections?",
+        "Question 96: A PC has no sound. What would you check first?",
+        "Question 97: A user can’t log in. How do you reset the password in Windows?",
+        "Question 98: Monitor shows “No signal” but CPU is on. List two checks?",
+        "Question 99: You accidentally deleted an important file. How would you recover it?",
+        "Question 100: The PC keeps restarting randomly. What could be the reason?",
+      ];
+
+      // Ensure you have exactly 100 questions for this example
+      if (allQuestions.length !== 100) {
+        console.warn(
+          "Warning: The 'allQuestions' array does not contain 100 questions. Please adjust."
+        );
+      }
+
+      function generateQuestions() {
+        // Determine the number of questions to generate (between 30 and 40, inclusive)
+        const numQuestionsToGenerate =
+          Math.floor(Math.random() * (40 - 30 + 1)) + 30;
+
+        // Create a shuffled copy of the array
+        const shuffledQuestions = [...allQuestions].sort(
+          () => Math.random() - 0.5
+        );
+
+        // Select the first 'numQuestionsToGenerate' questions
+        const selectedQuestions = shuffledQuestions.slice(
+          0,
+          numQuestionsToGenerate
+        );
+
+        const outputDiv = document.getElementById("output");
+        const questionCountSpan = document.getElementById("questionCount");
+
+        outputDiv.innerHTML = ""; // Clear previous questions
+        if (selectedQuestions.length > 0) {
+          const ol = document.createElement("ol");
+          selectedQuestions.forEach((question) => {
+            const li = document.createElement("li");
+            li.textContent = question;
+            ol.appendChild(li);
+          });
+          outputDiv.appendChild(ol);
+        } else {
+          outputDiv.textContent = "Could not generate questions.";
+        }
+        questionCountSpan.textContent = selectedQuestions.length;
+      }
+
+      // Generate questions on page load
+      generateQuestions();
+    </script>
+  </body>
+</html>
